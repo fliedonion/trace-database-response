@@ -1,21 +1,26 @@
 version: "3"
 services:
   app:
-    container_name: express-mongo
-    restart: always
+    # container_name: express-mongo
+    # restart: always
     # prevent exit
     # https://stackoverflow.com/questions/38546755/docker-compose-keep-container-running
-    tty: true
-    build: ./
+    # tty: true
+    image: node:10-alpine
+    # build: ./  # build on docker-compose instead Dockerfile build.
+    working_dir: /app
     ports:
       - "80:3000"
     volumes:
       - .:/app
-      - /app/node_modules
+      # - /app/node_modules
+    command: > 
+         /bin/sh -c "yarn install; echo 'yarn finished'; touch /tmp/dummy.log; tail -f /tmp/dummy.log"
     links:
       - mongo
   mongo:
-    container_name: mongo
+    # container_name: mongo
     image: mongo:3.4
-    ports:
-      - "27017:27017"
+    # # inside compose, app can access mongo (without expose outside)
+    # ports:
+    #  - "27017:27017"
